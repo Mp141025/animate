@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+    .emoji {
+      position: absolute;
+      font-size: 30px;
+      animation: float 8s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-50px) rotate(10deg); }
+    }
+    canvas {
+      display: block;
+    }
+    .text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: Arial, sans-serif;
+      color: #333;
+      text-align: center;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="emojis"></div>
+  <div class="text" id="text">Riddle will appear here</div>
+
+  <script>
+    // ====== SETUP ======
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const emojis = ['🧪', '🔬', '🌱', '🧬', '⚗️', '🦠', '🧫', '🌡️', '🧠', '💉'];
+    let width, height;
+
+    // ====== INIT ======
+    function init() {
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      animateBackground();
+      spawnEmojis();
+    }
+
+    // ====== ANIMATED BACKGROUND (LINES/CURVES) ======
+    function animateBackground() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Smooth curves
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        ctx.moveTo(0, Math.random() * height);
+        ctx.bezierCurveTo(
+          width * 0.3, Math.random() * height,
+          width * 0.7, Math.random() * height,
+          width, Math.random() * height
+        );
+      }
+      ctx.stroke();
+      
+      requestAnimationFrame(animateBackground);
+    }
+
+    // ====== FLOATING EMOJIS ======
+    function spawnEmojis() {
+      const container = document.getElementById('emojis');
+      container.innerHTML = '';
+      for (let i = 0; i < 8; i++) {
+        const emoji = document.createElement('div');
+        emoji.className = 'emoji';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = `${Math.random() * 100}%`;
+        emoji.style.top = `${Math.random() * 100}%`;
+        emoji.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(emoji);
+      }
+    }
+
+    // ====== UTILS ======
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    init();
+  </script>
+</body>
+</html>
